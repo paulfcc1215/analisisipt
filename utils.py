@@ -85,7 +85,7 @@ def get_model():
     }
 
 def get_industrias():
-    datos = pd.read_csv("src/data/ipt_2016_2021_4.csv", delimiter=";")
+    datos = pd.read_csv("data/ipt_2016_2021_4.csv", delimiter=";")
     datos = datos.set_index('PERIODO')
     catalogo_industrias = {}
     for clave in datos.keys():
