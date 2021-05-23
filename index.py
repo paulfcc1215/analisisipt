@@ -8,10 +8,10 @@ def app(environ, start_response):
 	industrias = get_industrias()
 	#data=str(render_template('index.html', test_data=test_data, industrias=industrias))
 	status = '200 OK'
+	data="fer"
 	response_headers = [
 		('Content-type', 'text/plain'),
 		('Content-Length', str(len(data)))
 	]
 	start_response(status, response_headers)
-	data="fer"
 	return iter([data])
