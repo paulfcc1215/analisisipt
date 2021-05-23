@@ -1,7 +1,12 @@
 import sys
+from typing import ContextManager
+from flask import Flask, render_template
+from utils import get_industrias, get_model
+
 def app(environ, start_response):
-	"""Simplest possible application object"""
-	data = b'Hello, World!\n'
+	test_data = get_model()
+	industrias = get_industrias()
+	data=render_template('index.html', test_data=test_data, industrias=industrias)
 	status = '200 OK'
 	response_headers = [
 		('Content-type', 'text/plain'),
