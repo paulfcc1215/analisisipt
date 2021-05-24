@@ -6,9 +6,9 @@ from utils import get_industrias, get_model
 def app(environ, start_response):
 	test_data = get_model()
 	industrias = get_industrias()
-	#data=str(render_template('index.html', test_data=test_data, industrias=industrias))
+	data = str(render_template('index.html', test_data=test_data, industrias=industrias))
 	status = '200 OK'
-	data=b"fer"
+	#data=b"fer"
 	response_headers = [
 		('Content-type', 'text/plain'),
 		('Content-Length', str(len(data)))
