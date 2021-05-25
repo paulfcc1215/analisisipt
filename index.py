@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 
 @app.route('/', methods=['GET', ])
-def home():
+def app():
     
     test_data = get_model()
     industrias = get_industrias()
