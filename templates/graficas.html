@@ -30,8 +30,10 @@
 <body class="sidebar-mini layout-fixed sidebar-collapse">
   
   <script>
-    var industrias = {{ industrias | tojson() }};
-    var test_data = {{ test_data | tojson() }};
+    var industrias = {{ industrias|tojson|safe }};
+    var test_data = {{ test_data|tojson|safe }};
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    console.log($SCRIPT_ROOT)
   </script>
 
   <div class="wrapper">
@@ -49,7 +51,7 @@
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link">Home</a>
+          <a href="/" class="nav-link">Inicio</a>
         </li>
       </ul>
 
@@ -128,7 +130,7 @@
             <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
             <li class="nav-header">MENU PRINCIPAL</li>
             <li class="nav-item">
-              <a href="pages/widgets.html" class="nav-link">
+              <a href="{{ url_for('graficas') }}" class="nav-link">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
                   Gráficas
@@ -150,16 +152,12 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0">Analisis de Indices de Puestos de Trabajo</h1>
-            </div><!-- /.col -->
+              <h1 class="m-0">Análisis de Indices de Puestos de Trabajo</h1>
+            </div>
             <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard v1</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+            </div>
+          </div>
+        </div>
       </div>
       <!-- /.content-header -->
 
@@ -177,30 +175,38 @@
                 <div class="card-header">
                   <h3 class="card-title">Parámetros</h3>
                 </div>
-                <div class="card-body">
-                  <!-- Rango de fechas -->
-                  <div class="form-group">
-                    <label>Seleccione Fechas:</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="far fa-calendar-alt"></i>
-                        </span>
-                      </div>
-                      <input type="text" class="form-control float-right" id="reservation">
+                <form method="POST" action="">
+                  <div class="card-body">
+                    <!-- Rango de fechas -->
+                    <div class="form-group">
+                      <label>Desde:</label>
+                        <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate"/>
+                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Hasta:</label>
+                        <div class="input-group date" id="reservationdate2" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate2"/>
+                            <div class="input-group-append" data-target="#reservationdate2" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Seleccione de industrias-->
+                    <div class="form-group">
+                      <label>Seleccione Industrias:</label>
+                      <select class="form-control" multiple="multiple" size="12" id="cmbIndustrias">
+                      </select>
                     </div>
                   </div>
-                  <!--Seleccione de industrias-->
-                  <div class="form-group">
-                    <label>Seleccione Industrias:</label>
-                    <select class="form-control" multiple="multiple" size="12" id="cmbIndustrias">
-                    </select>
+                  <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Consultar</button>
                   </div>
-                  
-                </div>
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Consultar</button>
-                </div>
+                </form>
               </div>
 
 
@@ -217,7 +223,7 @@
                 <div class="card-body">
 
                   <div>
-                    <canvas id="myChart"></canvas>
+                    <canvas id="cont_graficas"></canvas>
                   </div>
 
                 </div>
@@ -277,26 +283,31 @@
 
   <script>
     $(function(){
-      console.log(test_data)
-      $('#reservation').daterangepicker()
+      //console.log(test_data)
+      //$('#reservation').daterangepicker()
+      $('#reservationdate').datetimepicker({
+          format: 'YYYY-MM'
+      });
+      $('#reservationdate2').datetimepicker({
+          format: 'YYYY-MM'
+      });
 
       const config = {
         type: 'line',
         data: {
           datasets: [{
-            label: 'My First dataset',
-            data: Object.keys(test_data),
+            label: 'Indicadores de puestos de trabajo',
+            data: Object.values(test_data),
             fill: false,
             borderColor: 'rgb(255, 99, 132)',
-            tension: 0
+            tension: 0.1
           }],
-          labels: Object.values(test_data)
-        },
-        options: {}
+          labels: Object.keys(test_data)
+        }
       };
 
       var myChart = new Chart(
-        document.getElementById('myChart'),
+        $('#cont_graficas'),
         config
       );
 

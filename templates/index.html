@@ -29,11 +29,6 @@
 <!--<body class="hold-transition sidebar-mini layout-fixed">-->
 <body class="sidebar-mini layout-fixed sidebar-collapse">
   
-  <script>
-    var industrias = {{ industrias | tojson() }};
-    var test_data = {{ test_data | tojson() }};
-  </script>
-
   <div class="wrapper">
 
     <!-- Preloader -->
@@ -49,7 +44,7 @@
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link">Home</a>
+          <a href="/" class="nav-link">Inicio</a>
         </li>
       </ul>
 
@@ -128,12 +123,9 @@
             <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
             <li class="nav-header">MENU PRINCIPAL</li>
             <li class="nav-item">
-              <a href="pages/widgets.html" class="nav-link">
+              <a href="{{ url_for('graficas')}}" class="nav-link">
                 <i class="nav-icon fas fa-th"></i>
-                <p>
-                  Gráficas
-                  <span class="right badge badge-danger"></span>
-                </p>
+                <p>Gráficas<span class="right badge badge-danger"></span></p>
               </a>
             </li>
           </ul>
@@ -150,16 +142,12 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0">Analisis de Indices de Puestos de Trabajo</h1>
-            </div><!-- /.col -->
+              <h1 class="m-0">Análisis de Indices de Puestos de Trabajo</h1>
+            </div>
             <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard v1</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+            </div>
+          </div>
+        </div>
       </div>
       <!-- /.content-header -->
 
@@ -169,64 +157,8 @@
           
           <!-- Main row -->
           <div class="row">
-            <!-- Left col -->
-            <section class="col-lg-3 connectedSortable">
-
-
-              <div class="card card-primary">
-                <div class="card-header">
-                  <h3 class="card-title">Parámetros</h3>
-                </div>
-                <div class="card-body">
-                  <!-- Rango de fechas -->
-                  <div class="form-group">
-                    <label>Seleccione Fechas:</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">
-                          <i class="far fa-calendar-alt"></i>
-                        </span>
-                      </div>
-                      <input type="text" class="form-control float-right" id="reservation">
-                    </div>
-                  </div>
-                  <!--Seleccione de industrias-->
-                  <div class="form-group">
-                    <label>Seleccione Industrias:</label>
-                    <select class="form-control" multiple="multiple" size="12" id="cmbIndustrias">
-                    </select>
-                  </div>
-                  
-                </div>
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Consultar</button>
-                </div>
-              </div>
-
-
-
-            </section>
-            <!-- /.Left col -->
-
-            <!-- right col (We are only adding the ID to make the widgets sortable)-->
-            <section class="col-lg-9 connectedSortable">
-              <div class="card card-success">
-                <div class="card-header">
-                  <h3 class="card-title">Gráficas</h3>
-                </div>
-                <div class="card-body">
-
-                  <div>
-                    <canvas id="myChart"></canvas>
-                  </div>
-
-                </div>
-                <div class="card-footer">
-                </div>
-              </div>
-            </section>
-            <!-- right col -->
-
+            
+            <h1>Bienvenido!!</h1>
 
 
           </div>
@@ -274,39 +206,6 @@
   <script src="{{ url_for('static',filename='plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
   <!-- AdminLTE App -->
   <script src="{{ url_for('static',filename='dist/js/adminlte.js') }}"></script>
-
-  <script>
-    $(function(){
-      console.log(test_data)
-      $('#reservation').daterangepicker()
-
-      const config = {
-        type: 'line',
-        data: {
-          datasets: [{
-            label: 'My First dataset',
-            data: Object.keys(test_data),
-            fill: false,
-            borderColor: 'rgb(255, 99, 132)',
-            tension: 0
-          }],
-          labels: Object.values(test_data)
-        },
-        options: {}
-      };
-
-      var myChart = new Chart(
-        document.getElementById('myChart'),
-        config
-      );
-
-      $("#cmbIndustrias").append('<option value="1">Seleccione...</option>');
-      $.each(industrias,function(i,o){
-        $("#cmbIndustrias").append('<option value="'+o+'">'+o+'</option>');
-      })
-
-    })
-  </script>
 
 </body>
 </html>
