@@ -5,15 +5,15 @@ import pandas as pd
 # libreria numérica
 import numpy as np 
 # para crear gráficos con matplotlib
-import matplotlib.pyplot as plt 
+#import matplotlib.pyplot as plt 
 import plotly.express as px
 from datetime import datetime
 #test de addfuller
-from statsmodels.tsa.stattools import adfuller
-from pmdarima.arima import auto_arima
+#from statsmodels.tsa.stattools import adfuller
+#from pmdarima.arima import auto_arima
 import warnings
 warnings.filterwarnings('ignore')
-from statsmodels.tsa.arima_model import ARIMA
+#from statsmodels.tsa.arima_model import ARIMA
 
 def get_model():
 
