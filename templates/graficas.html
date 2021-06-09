@@ -31,9 +31,6 @@
   
   <script>
     var industrias = {{ industrias|tojson|safe }};
-    var test_data = {{ test_data|tojson|safe }};
-    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    console.log($SCRIPT_ROOT)
   </script>
 
   <div class="wrapper">
@@ -181,7 +178,7 @@
                     <div class="form-group">
                       <label>Desde:</label>
                         <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate"/>
+                            <input type="text" id="fecha_desde" class="form-control datetimepicker-input" data-target="#reservationdate"/>
                             <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -190,7 +187,7 @@
                     <div class="form-group">
                       <label>Hasta:</label>
                         <div class="input-group date" id="reservationdate2" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate2"/>
+                            <input type="text" id="fecha_hasta" class="form-control datetimepicker-input" data-target="#reservationdate2"/>
                             <div class="input-group-append" data-target="#reservationdate2" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -204,7 +201,7 @@
                     </div>
                   </div>
                   <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Consultar</button>
+                    <button type="button" class="btn btn-primary" onclick="consultar()">Consultar</button>
                   </div>
                 </form>
               </div>
@@ -212,13 +209,16 @@
 
 
             </section>
-            <!-- /.Left col -->
 
-            <!-- right col (We are only adding the ID to make the widgets sortable)-->
             <section class="col-lg-9 connectedSortable">
               <div class="card card-success">
                 <div class="card-header">
                   <h3 class="card-title">Gráficas</h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </div>
                 </div>
                 <div class="card-body">
 
@@ -231,17 +231,12 @@
                 </div>
               </div>
             </section>
-            <!-- right col -->
-
-
 
           </div>
-          <!-- /.row (main row) -->
-        </div><!-- /.container-fluid -->
+        </div>
       </section>
-      <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
+
     <footer class="main-footer">
       <strong>Copyright &copy;
       <div class="float-right d-none d-sm-inline-block">
@@ -249,11 +244,10 @@
       </div>
     </footer>
 
-    <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Control sidebar content goes here -->
     </aside>
-    <!-- /.control-sidebar -->
+    
   </div>
   <!-- ./wrapper -->
 
@@ -282,38 +276,66 @@
   <script src="{{ url_for('static',filename='dist/js/adminlte.js') }}"></script>
 
   <script>
+    
+    function consultar(){
+
+      if($("#fecha_desde").val()==''){
+        alert("Seleccione Fecha Desde");
+        return false;
+      }
+      if($("#fecha_hasta").val()==''){
+        alert("Seleccione Fecha Hasta");
+        return false;
+      }
+      if($("#cmbIndustrias").val().length==0){
+        alert("Seleccione al menos una industria");
+        return false;
+      }
+      $("#cont_graficas").empty();
+      $.ajax({
+        method:"post",
+        url:"{{ url_for('ajax_test') }}",
+        data : {
+          "fecha_desde" : $("#fecha_desde").val(),
+          "fecha_hasta" : $("#fecha_hasta").val(),
+          "industrias" : JSON.stringify($("#cmbIndustrias").val())
+        },
+        success: function(result){
+          console.log(result.ipt_datos)
+          const config = {
+            type: 'line',
+            data: {
+              datasets: [
+                {
+                  label: 'Indicador de puestos de trabajo',
+                  data: Object.values(result.ipt_datos),
+                  fill: true,
+                  borderColor: 'rgb(255, 99, 132)',
+                  tension: 0.1
+                },
+              ],
+              labels: Object.keys(result.ipt_datos)
+            }
+          };
+          var myChart = new Chart(
+            $('#cont_graficas'),
+            config
+          );
+
+        }
+      })
+    }
+
     $(function(){
-      //console.log(test_data)
-      //$('#reservation').daterangepicker()
+
       $('#reservationdate').datetimepicker({
           format: 'YYYY-MM'
       });
       $('#reservationdate2').datetimepicker({
           format: 'YYYY-MM'
       });
-
-      const config = {
-        type: 'line',
-        data: {
-          datasets: [{
-            label: 'Indicadores de puestos de trabajo',
-            data: Object.values(test_data),
-            fill: false,
-            borderColor: 'rgb(255, 99, 132)',
-            tension: 0.1
-          }],
-          labels: Object.keys(test_data)
-        }
-      };
-
-      var myChart = new Chart(
-        $('#cont_graficas'),
-        config
-      );
-
-      $("#cmbIndustrias").append('<option value="1">Seleccione...</option>');
       $.each(industrias,function(i,o){
-        $("#cmbIndustrias").append('<option value="'+o+'">'+o+'</option>');
+        $("#cmbIndustrias").append('<option value="'+i+'">'+o+'</option>');
       })
 
     })
